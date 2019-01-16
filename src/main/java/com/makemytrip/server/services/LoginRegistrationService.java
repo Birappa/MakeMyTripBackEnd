@@ -41,5 +41,16 @@ public class LoginRegistrationService {
 		
 		loginRegistrationRepository.deleteById(id);
 	}
+	
+	public String loginUserValidate(User loginUser) {
+		List<User> log = loginRegistrationRepository.findAll();
+		for (User list1 : log) {
+
+			if (loginUser.getName().equals(list1.getName()) && loginUser.getPassword().equals(list1.getPassword())) {
+				return "valid User";
+			}
+		}
+		return "Password and UserId did not match";
+	}
 
 }

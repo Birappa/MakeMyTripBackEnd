@@ -49,5 +49,11 @@ public class LoginRegistrationController {
 		return "User is removed successfully";
 	}
 	
+	 @RequestMapping(method=RequestMethod.POST,value="/login")
+	    public void loginUserValidate(@RequestBody User logUser)
+	    {
+		 loginRegistrationService.loginUserValidate(logUser);
+	    }
+	
 	
 }
