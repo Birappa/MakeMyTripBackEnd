@@ -1,4 +1,6 @@
 package com.makemytrip.server.model;
+
+
 import org.springframework.data.annotation.Id;
 
 public class User {
@@ -9,6 +11,7 @@ public class User {
 	private String email;
 	private long contact;
 	private String password;
+	
 	
 	public User() {
 		super();
