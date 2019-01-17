@@ -6,4 +6,6 @@ import com.makemytrip.server.model.User;
 
 public interface LoginRegistrationRepository extends MongoRepository<User, String> {
 
+	
+
 }
