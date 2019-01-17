@@ -1,6 +1,9 @@
 package com.makemytrip.server.model;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+
+@Document(collection="LoginUser")
 public class User {
 
 	@Id
@@ -10,6 +13,7 @@ public class User {
 	private String email;
 	private long contact;
 	private String password;
+
 	
 	public User() {
 		super();
