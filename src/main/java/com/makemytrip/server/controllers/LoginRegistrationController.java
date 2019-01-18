@@ -24,7 +24,7 @@ public class LoginRegistrationController {
 	@Autowired
 	private LoginRegistrationService loginRegistrationService;
 	
-	@RequestMapping("/allusers")
+	@RequestMapping("/users")
 	public List<User> getAllUsers(){
 		return loginRegistrationService.getAllUsers();
 	}
@@ -35,8 +35,9 @@ public class LoginRegistrationController {
 	}
 	
 	@RequestMapping(value="/users",method=RequestMethod.POST)
-	public void addUser(@RequestBody User user) {
+	public String addUser(@RequestBody User user) {
 		loginRegistrationService.addUser(user);
+		return "user successfully added";
 	}
 	
 	@RequestMapping(value="/users/{id}",method=RequestMethod.PUT)
@@ -47,7 +48,7 @@ public class LoginRegistrationController {
 	@RequestMapping(value="/users/{id}", method=RequestMethod.DELETE)
 	public String deleteUser(@PathVariable String id) {
 		loginRegistrationService.deleteUser(id);
-		return "User is removed successfully";
+		return "user has deleted";
 	}
 	
 	 @RequestMapping(method=RequestMethod.POST,value="/login")

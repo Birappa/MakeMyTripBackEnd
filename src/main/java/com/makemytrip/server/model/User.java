@@ -2,6 +2,8 @@
 package com.makemytrip.server.model;
 
 
+import javax.persistence.Entity;
+
 import org.springframework.data.annotation.Id;
 
 
@@ -9,7 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection="LoginUser")
+@Entity
 public class User {
 
 	@Id

@@ -31,6 +31,7 @@ public class LoginRegistrationService {
 	public User getUser(String id) {
 
 		return loginRegistrationRepository.findById(id).get();
+		//return new User("1","birappa","br@gmail.com",123456,"123456");
 	}
 
 	public User addUser(User user) {
@@ -46,8 +47,8 @@ public class LoginRegistrationService {
 
 	
 	  public void deleteUser(String id) {
+		  loginRegistrationRepository.deleteById(id); 
 	 
-	  loginRegistrationRepository.deleteById(id); 
 	  }
 	  
 	
