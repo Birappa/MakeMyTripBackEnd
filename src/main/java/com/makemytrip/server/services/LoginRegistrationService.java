@@ -1,64 +1,63 @@
 package com.makemytrip.server.services;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
 import com.makemytrip.server.model.User;
-import com.makemytrip.server.repository.LoginRegistrationRepository;
+
 
 
 
 @Service
 public class LoginRegistrationService {
 
-	/*@Autowired
-	private LoginRegistrationRepository loginRegistrationRepository;*/
+	
+	private final String uri="http://user-data-service/users";
 	
 	@Inject
 	private RestTemplate restTemplate;
 
-	public Object getAllUsers() {
+	public List getAllUsers() {
 
-		 return restTemplate.getForEntity("http://user-data-service/users", List.class).getBody();
-		//return loginRegistrationRepository.findAll();
+		 return restTemplate.getForEntity(uri, List.class).getBody();
 
 	}
 
-	public User getUser(long id) {
+	public User getUserByEmail(String email) {
 
-		return restTemplate.getForEntity("http://user-data-service/users/"+id, User.class).getBody();
-		//return loginRegistrationRepository.findById(id).get();
-		//return new User("1","birappa","br@gmail.com",123456,"123456");
+		return restTemplate.getForObject(uri+"/{email}", User.class,email);
+	
+	}
+	
+	public User getUserById(long id) {
+
+		return restTemplate.postForObject(uri+"/{id}",id, User.class,id);
+	
 	}
 
 	public User addUser(User user) {
-		return restTemplate.getForEntity("http://user-data-service/users/", User.class).getBody();
-		//return loginRegistrationRepository.save(user);
+		
+		return restTemplate.postForObject(uri, user, User.class);
+		
 	}
 
-	public User updateUser(long id, User user) {
+	public void updateUser(long id, User user) {
 		
-		return restTemplate.getForEntity("http://user-data-service/users/"+id, User.class,user).getBody();
-		//user.setId(id);
-		//return loginRegistrationRepository.save(user);
-
+		restTemplate.put(uri+"/{id}",user,id);
+		
 	}
 
 	
 	  public void deleteUser(long id) {
-		restTemplate.getForEntity("http://user-data-service/users/"+id, User.class).getBody();
-		  //loginRegistrationRepository.deleteById(id); 
-	 
+		  
+		restTemplate.delete(uri+"/{id}", id);
+		  
 	  }
 	  
 	

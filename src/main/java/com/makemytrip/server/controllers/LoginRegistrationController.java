@@ -35,10 +35,14 @@ public class LoginRegistrationController {
 		return loginRegistrationService.getAllUsers();
 	}
 	
+	@GetMapping("/users/{email}")
+	public User getUserByEmail(@PathVariable String email) {
+		return loginRegistrationService.getUserByEmail(email);
+	}
 	
-	@GetMapping("/users/{id}")
-	public User getUser(@PathVariable long id) {
-		return loginRegistrationService.getUser(id);
+	@PostMapping("/users/{id}")
+	public User getUserById(@PathVariable long id) {
+		return loginRegistrationService.getUserById(id);
 	}
 	
 	
