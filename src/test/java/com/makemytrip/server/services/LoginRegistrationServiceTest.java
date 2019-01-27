@@ -1,93 +1,65 @@
 package com.makemytrip.server.services;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestTemplate;
 
 import com.makemytrip.server.model.User;
-import com.makemytrip.server.repository.LoginRegistrationRepository;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
 public class LoginRegistrationServiceTest {
 	
 	@Mock
-	private LoginRegistrationRepository loginRegistrationRepository;
+	private RestTemplate restTemplate;
 	
 	@InjectMocks
-	private LoginRegistrationService loginRegistrationService;
+	private LoginRegistrationService userService;
 	
+	private final String uri="http://user-data-service/users";
+	
+	@Before
 	private void setup() {
 		MockitoAnnotations.initMocks(this);
 
 	}
-	/*
+	
 	@Test
-	public void testGetAllUsers() throws Exception {
-		List<User> users=new ArrayList<User>(Arrays.asList(new User("1","birappa","br@gmail.com",123456,"123456"),
-				new User("2","prathyusha","pr@gmail.com",123456,"123456"),
-				new User("3","sneha","sn@gmail.com",123456,"123456")));
+	public void testSaveUser() throws Exception {
+		User user=new User(1,"birappa","birappa@gmail.com","admin");
 		
-		when(loginRegistrationRepository.findAll()).thenReturn(users);
+		when(restTemplate.postForObject(uri,user,User.class)).thenReturn(user);
 		
-		Object result=loginRegistrationService.getAllUsers();
+		User result=userService.saveUser(user);
 		
-		//assertEquals(3, result.size());
+		assertEquals(1, result.getId());
+		assertEquals("birappa", result.getUserName());
+		assertEquals("birappa@gmail.com", result.getEmail());
 		
 	}
 	
-	
 	@Test
-	public void testGetUser() throws Exception {
-		User user=new User("3","sneha","sn@gmail.com",123456,"123456");
+	public void testGetUserByEmail() throws Exception{
 		
-		when(loginRegistrationRepository.findById(Mockito.anyString())).thenReturn(Optional.of(user));
-		
-		User result=loginRegistrationService.getUser(3);
-		
-		assertEquals("3", result.getId());
-		assertEquals("sneha", result.getName());
-		assertEquals("sn@gmail.com", result.getEmail());
-		
-	}
-	
-	
-	@Test
-	public void testAddUser() throws Exception {
-		User user=new User("3","sneha","sn@gmail.com",123456,"123456");
-		
-		when(loginRegistrationRepository.save(user)).thenReturn(user);
-		
-		User result=loginRegistrationService.addUser(user);
-		
-		assertEquals("3", result.getId());
-		assertEquals("sneha", result.getName());
-		assertEquals("sn@gmail.com", result.getEmail());
-		
-	}
+		User user=new User(1,"birappa","birappa@gmail.com","admin");
 
-	
-	@Test
-	public void testDeleteUser() throws Exception {
-		User user=new User("3","sneha","sn@gmail.com",123456,"123456");
+		when(restTemplate.getForObject(uri+"/{email}",User.class,"birappa@gmail.com")).thenReturn(user);
+
+		User result=userService.getUserByEmail("birappa@gmail.com");
+
+		assertEquals(1, result.getId());
+		assertEquals("birappa", result.getUserName());
+		assertEquals("birappa@gmail.com", result.getEmail());
+	}
 		
-		loginRegistrationService.deleteUser(3);
-		
-		verify(loginRegistrationRepository, times(1)).deleteById("3");
-		
-	}*/
-	
 }

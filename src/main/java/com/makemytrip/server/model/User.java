@@ -8,37 +8,31 @@ import org.springframework.data.annotation.Id;
 
 
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
-
 @Entity
 public class User {
 
 	@Id
 	private long id;
-	
-	private String name;
+
+	private String userName;
 	private String email;
-	private long contact;
 	private String password;
 
-	
+
 	public User() {
 		super();
 	}
-	public User(String name, String email, long contact, String password) {
+	public User(String userName, String email, String password) {
 		super();
-		this.name = name;
+		this.userName = userName;
 		this.email = email;
-		this.contact = contact;
 		this.password = password;
 	}
-	public User(long id, String name, String email, long contact, String password) {
+	public User(long id, String userName, String email, String password) {
 		super();
 		this.id = id;
-		this.name = name;
+		this.userName = userName;
 		this.email = email;
-		this.contact = contact;
 		this.password = password;
 	}
 	public long getId() {
@@ -47,11 +41,11 @@ public class User {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
+	public String getUserName() {
+		return this.userName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public String getEmail() {
 		return email;
@@ -59,19 +53,13 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public long getContact() {
-		return contact;
-	}
-	public void setContact(long contact) {
-		this.contact = contact;
-	}
 	public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
+
 }
 

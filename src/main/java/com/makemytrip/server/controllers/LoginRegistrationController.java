@@ -1,89 +1,81 @@
 package com.makemytrip.server.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.makemytrip.server.exception.AlreadyUserExistException;
+import com.makemytrip.server.exception.BadRequestException;
+import com.makemytrip.server.exception.UserNotExistException;
+import com.makemytrip.server.model.ApiResponse;
+import com.makemytrip.server.model.LoginUser;
 import com.makemytrip.server.model.User;
-import com.makemytrip.server.services.LoginRegistrationService;
+import com.makemytrip.server.services.UserService;
 
 @RestController
 @RequestMapping("/makemytrip")
-//@CrossOrigin("http://localhost:4200")
+@CrossOrigin("*")
 public class LoginRegistrationController {
 
-	
+
 	@Autowired
-	private LoginRegistrationService loginRegistrationService;
-	
-	@GetMapping("/users")
-	public Object getAllUsers(){
-		return loginRegistrationService.getAllUsers();
-	}
-	
+	private UserService userService;
+
 	@GetMapping("/users/{email}")
-	public User getUserByEmail(@PathVariable String email) {
-		return loginRegistrationService.getUserByEmail(email);
+	public ApiResponse<User> getUserByEmail(@PathVariable String email) {
+		
+		try {
+			return new ApiResponse<User>(HttpStatus.OK.value(), "User details", userService.getUserByEmail(email));
+		}catch(Exception e) {
+			
+			throw new UserNotExistException("Invalid Email Address");
+		}
+		
 	}
-	
-	@PostMapping("/users/{id}")
-	public User getUserById(@PathVariable long id) {
-		return loginRegistrationService.getUserById(id);
-	}
-	
-	
+
 	@PostMapping("/users")
-	public String addUser(@RequestBody User user) {
-		loginRegistrationService.addUser(user);
-		return "user successfully added";
+	public ApiResponse<User> saveUser(@RequestBody User user) {
+		
+		try {
+			return new ApiResponse<>(HttpStatus.OK.value(), "User Registered successfully.",userService.saveUser(user));
+		}catch (Exception e) {
+			
+			throw new AlreadyUserExistException("Already User Exist");
+		}
+		
 	}
 	
-	
-	@PutMapping("/users/{id}")
-	public void updateUser(@PathVariable long id,@RequestBody User user) {
-		loginRegistrationService.updateUser(id,user);
+	@PostMapping("/users/login")
+	public ApiResponse<String> validateLoginUser(@RequestBody LoginUser loginUser) {
+		
+		try {
+			String userName = userService.validateLoginUser(loginUser);
+			if(userName==null)
+				throw new BadRequestException("Invalid username or password");
+			return new ApiResponse<>(HttpStatus.OK.value(),"User logged successfully",userName);
+		}catch (Exception e) {
+			
+			throw new BadRequestException("Invalid username or password");
+		}
+			
 	}
 	
-	
-	@DeleteMapping("/users/{id}")
-	public String deleteUser(@PathVariable long id) {
-		loginRegistrationService.deleteUser(id);
-		return "user has deleted";
-	}
-	
+
 	@Bean
 	@LoadBalanced
 	public RestTemplate restTemplate() {
+		
 		return new RestTemplate();
 	}
-	 
-	/*@PostMapping("/login")
-	    public String loginUserValidate(@RequestBody User logUser)
-	    {
-		 return loginRegistrationService.loginUserValidate(logUser);
-	    }
-	
-	
-	@PostMapping("/users/changepass/email")
-	 public void changePassword(@PathVariable String email,@PathVariable String password)
-	 {
-		
-		 loginRegistrationService.changeOldPassword(email, password);
-		 
-	 }*/
-	
+
+
 }

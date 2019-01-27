@@ -42,13 +42,11 @@ import org.springframework.web.context.WebApplicationContext;
 import com.makemytrip.server.MakeMyTripBackEndApplication;
 import com.makemytrip.server.model.User;
 import com.makemytrip.server.services.LoginRegistrationService;
+import com.makemytrip.server.services.UserService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(classes = MakeMyTripBackEndApplication.class)
 @SpringBootTest
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//@WebMvcTest(value = LoginRegistrationController.class)
 public class LoginRegistrationControllerTest {
 
 	private MockMvc mockMvc;
@@ -57,7 +55,7 @@ public class LoginRegistrationControllerTest {
     private WebApplicationContext wac;
 	
 	@Mock
-	private LoginRegistrationService loginRegistrationService;
+	private UserService userService;
 	
 	/*@Mock
 	private User user;*/
@@ -68,11 +66,26 @@ public class LoginRegistrationControllerTest {
 	
 	@Before
 	public void setUp() throws Exception{
-		//mockMvc=MockMvcBuilders.standaloneSetup(loginRegistrationController).build();
-		//MockitoAnnotations.initMocks(this);
 		 this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 	
+	
+	@Test
+	public void testSaveUser() throws Exception {
+		
+		User user=new User(1,"birappa","birappa@gmail.com","admin");
+
+		when(userService.saveUser(Mockito.any(User.class))).thenReturn(user);
+		mockMvc.perform(MockMvcRequestBuilders.post("/makemytrip/users")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"id\" : \"6\", \"email\" : \"sneha@gmail.com\",\"userName\" : \"sneha\",\"password\" : \"sneha\" }"))
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$.status").exists())
+		.andExpect(jsonPath("$.message").exists())
+		.andExpect(jsonPath("$.result").exists());
+	}
+
 	/*@Test
 	public void testgetUserMethod() throws Exception{
 		mockMvc.perform(get("/userobj").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
